@@ -100,7 +100,8 @@ apt-get -y install php"${PHP_VERSION}"-cli
 apt-get -y install php"${PHP_VERSION}"-pear
 apt-get -y install php"${PHP_VERSION}"-mysql
 apt-get -y install php"${PHP_VERSION}"-gd
-apt-get -y install php"${PHP_VERSION}"-dev
+# apt-get -y install php"${PHP_VERSION}"-dev
+apt-get -y install php"${PHP_VERSION}"-phpdbg
 apt-get -y install php"${PHP_VERSION}"-curl
 apt-get -y install php"${PHP_VERSION}"-opcache
 
