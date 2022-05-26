@@ -32,16 +32,26 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+INSTALL_PHPMYADMIN="False"
+
 #################################################
 # Base Package Installation Tasks
 #################################################
 
 # Update system
-apt update
+apt -y update
 apt -y upgrade
 
 # Install base packages
-apt install -y cron openssh-server vim sysstat man-db wget rsync screen
+apt -y install \
+    cron \
+    openssh-server \
+    vim \
+    sysstat \
+    man-db \
+    wget \
+    rsync \
+    screen
 
 #################################################
 # Web Server Package Installation Tasks
@@ -71,9 +81,45 @@ expose_php=Off
 session_save_path='/var/lib/php/sessions'
 
 # Install Apache and PHP packages
-apt-get install -y libapache2-mod-php libapache2-mod-php apache2 apache2-utils php-cli php-pear php-mysql php-gd php-dev php-curl php-opcache
+apt-get -y install \
+    libapache2-mod-php \
+    apache2 \
+    apache2-utils \
+    php-cli \
+    php-pear \
+    php-mysql \
+    php-gd \
+    php-dev \
+    php-curl \
+    php-opcache
+
 /usr/sbin/a2dismod mpm_event
-/usr/sbin/a2enmod access_compat alias auth_basic authn_core authn_file authz_core authz_groupfile authz_host authz_user autoindex deflate dir env filter mime mpm_prefork negotiation rewrite setenvif socache_shmcb ssl status php7.4 mpm_prefork
+
+/usr/sbin/a2enmod \
+    access_compat \
+    alias \
+    auth_basic \
+    authn_core \
+    authn_file \
+    authz_core \
+    authz_groupfile \
+    authz_host \
+    authz_user \
+    autoindex \
+    deflate \
+    dir \
+    env \
+    filter \
+    mime \
+    mpm_prefork \
+    negotiation \
+    rewrite \
+    setenvif \
+    socache_shmcb \
+    ssl \
+    status \
+    php7.4 \
+    mpm_prefork
 /usr/sbin/phpenmod opcache
 
 # Copy over templates
@@ -136,7 +182,7 @@ mysqlrootpassword=$(tr </dev/urandom -dc _A-Z-a-z-0-9 | head -c16)
 
 # Install MySQL packages
 export DEBIAN_FRONTEND=noninteractive
-apt-get install -y mysql-server mysql-client libmysqlclient-dev
+apt-get -y install mysql-server mysql-client libmysqlclient-dev
 mkdir -p /etc/mysql/conf.d
 mkdir -p /var/lib/mysqltmp
 chown mysql:mysql /var/lib/mysqltmp
@@ -174,8 +220,8 @@ echo "deb https://download.opensuse.org/repositories/home:/holland-backup/x${NAM
 wget -qO - https://download.opensuse.org/repositories/home:/holland-backup/x${NAME}_${VERSION_ID}/Release.key | apt-key add -
 
 # Install Holland packages
-apt-get update
-apt-get install -y holland python3-mysqldb
+apt-get -y update
+apt-get -y install holland python3-mysqldb
 
 # Copy over templates and configure backup directory
 cp ../templates/ubuntu2204/holland/default.conf /etc/holland/backupsets/default.conf
@@ -194,22 +240,26 @@ echo "30 3 * * * root /usr/sbin/holland -q bk" >/etc/cron.d/holland
 htuser=serverinfo
 htpass=$(tr </dev/urandom -dc _A-Z-a-z-0-9 | head -c16)
 
-# Install PHPMyAdmin package
-export DEBIAN_FRONTEND=noninteractive
-apt-get install -y phpmyadmin
-
-# Copy over templates
-cp ../templates/ubuntu2204/phpmyadmin/phpMyAdmin.conf /etc/phpmyadmin/phpMyAdmin.conf
-
 # Setup PHPMyAdmin variables
 echo "$htuser $htpass" >/root/.phpmyadminpass
 
-# Set PHPMyAdmin before htaccess file
-htpasswd -b -c /etc/phpmyadmin/phpmyadmin-htpasswd $htuser $htpass
+if [ $INSTALL_PHPMYADMIN = "True" ]
+    # Install PHPMyAdmin package
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get -y install phpmyadmin
 
-# Symlink in apache config and restart apache
-ln -s /etc/phpmyadmin/phpMyAdmin.conf /etc/apache2/conf-enabled/phpMyAdmin.conf
-systemctl restart apache2
+    # Copy over templates
+    cp ../templates/ubuntu2204/phpmyadmin/phpMyAdmin.conf /etc/phpmyadmin/phpMyAdmin.conf
+
+    # Set PHPMyAdmin before htaccess file
+    htpasswd -b -c /etc/phpmyadmin/phpmyadmin-htpasswd $htuser $htpass
+
+    # Symlink in apache config and restart apache
+    ln -s /etc/phpmyadmin/phpMyAdmin.conf /etc/apache2/conf-enabled/phpMyAdmin.conf
+    systemctl restart apache2
+else
+    echo "PhpMyAdmin isn't installed due to the choice of the user!"
+fi
 
 #################################################
 # Setup Report

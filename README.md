@@ -46,7 +46,7 @@ This should only be ran on fresh, base installation of the operating system.  If
 Download and setup the LAMP stack by:
 
 	cd /root
-	git clone https://github.com/stephenlang/bash-lamp-installer
+	git clone https://github.com/bilogic/bash-lamp-installer
 	cd bash-lamp-installer
 	bash install_lamp.sh
 
