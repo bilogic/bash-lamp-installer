@@ -90,17 +90,16 @@ LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
 read -n1 -s -r -p $'PPA added. Press space to continue...\n' key
 
 # Install Apache and PHP packages
-apt-get -y install \
-    libapache2-mod-php"${PHP_VERSION}" \
-    apache2 \
-    apache2-utils \
-    php"${PHP_VERSION}"-cli \
-    php"${PHP_VERSION}"-pear \
-    php"${PHP_VERSION}"-mysql \
-    php"${PHP_VERSION}"-gd \
-    php"${PHP_VERSION}"-dev \
-    php"${PHP_VERSION}"-curl \
-    php"${PHP_VERSION}"-opcache
+apt-get -y install libapache2-mod-php"${PHP_VERSION}"
+apt-get -y install apache2
+apt-get -y install apache2-utils
+apt-get -y install php"${PHP_VERSION}"-cli
+apt-get -y install php"${PHP_VERSION}"-pear
+apt-get -y install php"${PHP_VERSION}"-mysql
+apt-get -y install php"${PHP_VERSION}"-gd
+apt-get -y install php"${PHP_VERSION}"-dev
+apt-get -y install php"${PHP_VERSION}"-curl
+apt-get -y install php"${PHP_VERSION}"-opcache
 
 read -n1 -s -r -p $'PHP installed. Press space to continue...\n' key
 
