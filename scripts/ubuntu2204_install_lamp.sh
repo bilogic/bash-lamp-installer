@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/sudo bash
 
 # ubuntu2204_install_lamp.sh
 # LAMP installer setting up Apache, PHP, MySQL, Holland and attempts to
@@ -32,7 +32,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-PHP_VERSION=8.0
+PHP_VERSION=7.4
 INSTALL_PHPMYADMIN="False"
 
 # prevent all the restart services prompt
