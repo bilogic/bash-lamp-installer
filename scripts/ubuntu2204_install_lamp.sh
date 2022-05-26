@@ -32,6 +32,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+PHP_VERSION=8.0
 INSTALL_PHPMYADMIN="False"
 
 #################################################
@@ -80,18 +81,21 @@ short_open_tag=On
 expose_php=Off
 session_save_path='/var/lib/php/sessions'
 
+# Add the Ondrej PPA to get specific PHP version
+LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+
 # Install Apache and PHP packages
 apt-get -y install \
     libapache2-mod-php \
     apache2 \
     apache2-utils \
-    php-cli \
-    php-pear \
-    php-mysql \
-    php-gd \
-    php-dev \
-    php-curl \
-    php-opcache
+    php"${PHP_VERSION}"-cli \
+    php"${PHP_VERSION}"-pear \
+    php"${PHP_VERSION}"-mysql \
+    php"${PHP_VERSION}"-gd \
+    php"${PHP_VERSION}"-dev \
+    php"${PHP_VERSION}"-curl \
+    php"${PHP_VERSION}"-opcache
 
 /usr/sbin/a2dismod mpm_event
 
@@ -118,8 +122,12 @@ apt-get -y install \
     socache_shmcb \
     ssl \
     status \
-    php7.4 \
     mpm_prefork
+
+echo "*****************************"
+/usr/sbin/a2enmod php"${PHP_VERSION}"
+echo "*****************************"
+
 /usr/sbin/phpenmod opcache
 
 # Copy over templates
