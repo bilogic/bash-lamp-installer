@@ -35,6 +35,9 @@
 PHP_VERSION=8.0
 INSTALL_PHPMYADMIN="False"
 
+# prevent all the restart services prompt
+export DEBIAN_FRONTEND=noninteractive
+
 #################################################
 # Base Package Installation Tasks
 #################################################
@@ -83,10 +86,12 @@ session_save_path='/var/lib/php/sessions'
 
 # Add the Ondrej PPA to get specific PHP version
 LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+# LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/apache2
+read -n1 -s -r -p $'PPA added. Press space to continue...\n' key
 
 # Install Apache and PHP packages
 apt-get -y install \
-    libapache2-mod-php \
+    libapache2-mod-php"${PHP_VERSION}" \
     apache2 \
     apache2-utils \
     php"${PHP_VERSION}"-cli \
@@ -255,7 +260,7 @@ htpass=$(tr </dev/urandom -dc _A-Z-a-z-0-9 | head -c16)
 # Setup PHPMyAdmin variables
 echo "$htuser $htpass" >/root/.phpmyadminpass
 
-if [ $INSTALL_PHPMYADMIN = "True" ]
+if [ $INSTALL_PHPMYADMIN = "True" ]; then
     # Install PHPMyAdmin package
     export DEBIAN_FRONTEND=noninteractive
     apt-get -y install phpmyadmin
