@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/sudo bash
 
 # install_lamp.sh
 # LAMP installer setting up Apache, PHP, MySQL, Holland and attempts to

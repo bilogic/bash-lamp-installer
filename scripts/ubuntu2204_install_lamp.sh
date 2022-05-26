@@ -1,4 +1,4 @@
-#!/usr/bin/sudo bash
+#!/usr/bin/env bash
 
 # ubuntu2204_install_lamp.sh
 # LAMP installer setting up Apache, PHP, MySQL, Holland and attempts to
