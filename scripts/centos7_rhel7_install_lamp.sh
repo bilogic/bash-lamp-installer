@@ -32,7 +32,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-
 #################################################
 # Base Package Installation Tasks
 #################################################
@@ -45,21 +44,21 @@ yum install -y epel-release
 yum install -y https://repo.ius.io/ius-release-el7.rpm
 
 # Check to ensure EPEL repo was installed
-if [ `rpm -qa |grep -i epel-release | wc -l` -lt 1 ]; then
-	echo "Error:  EPEL repository could not be installed."
-	echo "Please install EPEL repository and rerun script."
-	echo "https://support.rackspace.com/how-to/install-epel-and-additional-repositories-on-centos-and-red-hat/"
-	sleep 2
-	exit 1
+if [ $(rpm -qa | grep -i epel-release | wc -l) -lt 1 ]; then
+    echo "Error:  EPEL repository could not be installed."
+    echo "Please install EPEL repository and rerun script."
+    echo "https://support.rackspace.com/how-to/install-epel-and-additional-repositories-on-centos-and-red-hat/"
+    sleep 2
+    exit 1
 fi
 
 # Check to ensure IUS repo was installed
-if [ `rpm -qa |grep -i ius-release | wc -l` -lt 1 ]; then
-	echo "Error:  IUS repository could not be installed."
-	echo "Please install IUS repository and rerun script."
-	echo "https://support.rackspace.com/how-to/install-epel-and-additional-repositories-on-centos-and-red-hat/"
-	sleep 2
-	exit 1
+if [ $(rpm -qa | grep -i ius-release | wc -l) -lt 1 ]; then
+    echo "Error:  IUS repository could not be installed."
+    echo "Please install IUS repository and rerun script."
+    echo "https://support.rackspace.com/how-to/install-epel-and-additional-repositories-on-centos-and-red-hat/"
+    sleep 2
+    exit 1
 fi
 
 # Install base packages
@@ -70,7 +69,6 @@ systemctl enable ntpd
 systemctl start crond
 systemctl start sshd
 systemctl start ntpd
-
 
 #################################################
 # Web Server Package Installation Tasks
@@ -84,10 +82,10 @@ keep_alive_timeout=5
 prefork_start_servers=4
 prefork_min_spare_servers=4
 prefork_max_spare_servers=9
-prefork_server_limit=`free -m | grep "Mem:" | awk '{print $2/2/15}' | xargs printf "%.0f"`
-prefork_max_clients=`free -m | grep "Mem:" | awk '{print $2/2/15}' | xargs printf "%.0f"`
+prefork_server_limit=$(free -m | grep "Mem:" | awk '{print $2/2/15}' | xargs printf "%.0f")
+prefork_max_clients=$(free -m | grep "Mem:" | awk '{print $2/2/15}' | xargs printf "%.0f")
 prefork_max_requests_per_child=1000
-prefork_listen_backlog=`free -m | grep "Mem:" | awk '{print $2/2/15*2}' | xargs printf "%.0f"`
+prefork_listen_backlog=$(free -m | grep "Mem:" | awk '{print $2/2/15*2}' | xargs printf "%.0f")
 worker_start_servers=4
 worker_max_clients=1024
 worker_min_spare_threads=64
@@ -148,8 +146,8 @@ sed -i "s/\$upload_max_filesize/$upload_max_filesize/g" /etc/php.ini
 
 # Secure /server-status behind htaccess
 srvstatus_htuser=serverinfo
-srvstatus_htpass=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16`
-echo "$srvstatus_htuser $srvstatus_htpass" > /root/.serverstatus
+srvstatus_htpass=$(tr </dev/urandom -dc _A-Z-a-z-0-9 | head -c16)
+echo "$srvstatus_htuser $srvstatus_htpass" >/root/.serverstatus
 htpasswd -b -c /etc/httpd/status-htpasswd $srvstatus_htuser $srvstatus_htpass
 
 # Set services to start on boot and start up
@@ -163,7 +161,6 @@ firewall-cmd --zone=public --add-service=https
 firewall-cmd --zone=public --permanent --add-service=https
 firewall-cmd --reload
 
-
 #################################################
 # MySQL Server Package Installation Tasks
 #################################################
@@ -174,20 +171,20 @@ socket=/var/lib/mysql/mysql.sock
 table_open_cache=2048
 query_cache_size=32M
 max_heap_table_size=64M
-max_connections=`echo $(( $prefork_max_clients + 2 ))`
+max_connections=$(echo $(($prefork_max_clients + 2)))
 wait_timeout=180
 net_read_timeout=30
 net_write_timeout=30
 back_log=128
 key_buffer_size=64M
-innodb_buffer_pool_size=`free -m | grep "Mem:" | awk '{print $2*20/100}' | xargs printf "%.0f"M`
+innodb_buffer_pool_size=$(free -m | grep "Mem:" | awk '{print $2*20/100}' | xargs printf "%.0f"M)
 innodb_log_buffer_size=64M
 log_bin=/var/lib/mysql/bin-log
 log_relay=/var/lib/mysql/relay-log
 log_slow=/var/lib/mysql/slow-log
 log_error=/var/log/mariadb/mariadb.log
 includedir=/etc/sysconfig/mysqld-config
-mysqlrootpassword=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16`
+mysqlrootpassword=$(tr </dev/urandom -dc _A-Z-a-z-0-9 | head -c16)
 
 # Install MySQL packages
 yum install -y mariadb mariadb-devel mariadb-server mariadb-libs
@@ -234,7 +231,6 @@ mysql -e "FLUSH PRIVILEGES"
 cp ../templates/rhel7/mysql/dot.my.cnf.template /root/.my.cnf
 sed -i "s/\$mysqlrootpassword/$mysqlrootpassword/g" /root/.my.cnf
 
-
 #################################################
 # Holland Installation Tasks
 #################################################
@@ -247,11 +243,10 @@ cp ../templates/rhel7/holland/default.conf.template /etc/holland/backupsets/defa
 sed -i 's@/var/spool/holland@/var/lib/mysqlbackup@g' /etc/holland/holland.conf
 
 # Setup nightly cronjob
-echo "30 3 * * * root /usr/sbin/holland -q bk" > /etc/cron.d/holland
+echo "30 3 * * * root /usr/sbin/holland -q bk" >/etc/cron.d/holland
 
 # Run holland
 /usr/sbin/holland -q bk
-
 
 #################################################
 # Setup Report
@@ -259,13 +254,13 @@ echo "30 3 * * * root /usr/sbin/holland -q bk" > /etc/cron.d/holland
 
 # Setup report variables
 txtbld=$(tput bold)
-lightblue=`tput setaf 6`
-nc=`tput sgr0`
-real_ip=`curl --silent -4 icanhazip.com 2>&1`
+lightblue=$(tput setaf 6)
+nc=$(tput sgr0)
+real_ip=$(curl --silent -4 icanhazip.com 2>&1)
 
 # Generate setup report
 
-cat << EOF > /root/setup_report
+cat <<EOF >/root/setup_report
 
 ${txtbld}---------------------------------------------------------------
                  LAMP Installation Complete
@@ -282,7 +277,7 @@ ${lightblue}Apache Server Status URL:${nc}   http://$real_ip/server-status
 ${lightblue}Apache Server Status User:${nc}  serverinfo
 ${lightblue}Apache Server Status Pass:${nc}  $srvstatus_htpass
 
-${lightblue}MySQL Root User:${nc}  root 
+${lightblue}MySQL Root User:${nc}  root
 ${lightblue}MySQL Root Pass:${nc}  $mysqlrootpassword
 
 If you lose this setup report, the credentails can be found in:
@@ -294,7 +289,7 @@ ${txtbld}---------------------------------------------------------------
 ---------------------------------------------------------------${nc}
 
 MySQL backups are being performed via Holland (www.hollandbackup.org) and
-is set to run nightly at 3:30AM server time.  
+is set to run nightly at 3:30AM server time.
 
 The critical information about Holland is below:
 

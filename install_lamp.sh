@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# install_lamp.sh 
+# install_lamp.sh
 # LAMP installer setting up Apache, PHP, MySQL, Holland and attempts to
 # set some sane defaults.
 #
@@ -32,51 +32,50 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-
 # Detect OS and run associated script
 
 if [ -f /etc/redhat-release ]; then
 
-        if [ `cat /etc/redhat-release |grep -c "release 6"` -eq 1 ]; then
-		cd scripts
-                bash centos6_rhel6_install_lamp.sh
+    if [ $(cat /etc/redhat-release | grep -c "release 6") -eq 1 ]; then
+        cd scripts
+        bash centos6_rhel6_install_lamp.sh
 
-        elif [ `cat /etc/redhat-release | grep -c "release 7"` -eq 1 ]; then
-		cd scripts
-                bash centos7_rhel7_install_lamp.sh
+    elif [ $(cat /etc/redhat-release | grep -c "release 7") -eq 1 ]; then
+        cd scripts
+        bash centos7_rhel7_install_lamp.sh
 
-        elif [ `cat /etc/redhat-release | grep -c "release 8"` -eq 1 ]; then
-                cd scripts
-                bash centos8_rhel8_install_lamp.sh
+    elif [ $(cat /etc/redhat-release | grep -c "release 8") -eq 1 ]; then
+        cd scripts
+        bash centos8_rhel8_install_lamp.sh
 
-        else
-                echo "Unsupported operating system"
-        fi
+    else
+        echo "Unsupported operating system"
+    fi
 fi
 
 if [ -f /etc/lsb-release ]; then
 
-        if [ `cat /etc/lsb-release | grep -c "RELEASE=12"` -eq 1 ]; then
-		cd scripts
-                bash ubuntu1204_install_lamp.sh
+    if [ $(cat /etc/lsb-release | grep -c "RELEASE=12") -eq 1 ]; then
+        cd scripts
+        bash ubuntu1204_install_lamp.sh
 
-        elif [ `cat /etc/lsb-release | grep -c "RELEASE=14"` -eq 1 ]; then
-                cd scripts
-		bash ubuntu1404_install_lamp.sh
+    elif [ $(cat /etc/lsb-release | grep -c "RELEASE=14") -eq 1 ]; then
+        cd scripts
+        bash ubuntu1404_install_lamp.sh
 
-        elif [ `cat /etc/lsb-release | grep -c "RELEASE=16"` -eq 1 ]; then
-                cd scripts
-		bash ubuntu1604_install_lamp.sh
+    elif [ $(cat /etc/lsb-release | grep -c "RELEASE=16") -eq 1 ]; then
+        cd scripts
+        bash ubuntu1604_install_lamp.sh
 
-        elif [ `cat /etc/lsb-release | grep -c "RELEASE=18"` -eq 1 ]; then
-                cd scripts
-                bash ubuntu1804_install_lamp.sh
+    elif [ $(cat /etc/lsb-release | grep -c "RELEASE=18") -eq 1 ]; then
+        cd scripts
+        bash ubuntu1804_install_lamp.sh
 
-        elif [ `cat /etc/lsb-release | grep -c "RELEASE=20"` -eq 1 ]; then
-                cd scripts
-                bash ubuntu2004_install_lamp.sh
-		
-        else
-                echo "Unsupported operating system"
-        fi
+    elif [ $(cat /etc/lsb-release | grep -c "RELEASE=20") -eq 1 ]; then
+        cd scripts
+        bash ubuntu2004_install_lamp.sh
+
+    else
+        echo "Unsupported operating system"
+    fi
 fi

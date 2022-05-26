@@ -32,7 +32,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-
 #################################################
 # Base Package Installation Tasks
 #################################################
@@ -44,12 +43,12 @@ yum -y update
 yum install -y epel-release
 
 # Check to ensure EPEL repo was installed
-if [ `rpm -qa |grep -i epel-release | wc -l` -lt 1 ]; then
-	echo "Error:  EPEL repository could not be installed."
-	echo "Please install EPEL repository and rerun script."
-	echo "https://support.rackspace.com/how-to/install-epel-and-additional-repositories-on-centos-and-red-hat/"
-	sleep 2
-	exit 1
+if [ $(rpm -qa | grep -i epel-release | wc -l) -lt 1 ]; then
+    echo "Error:  EPEL repository could not be installed."
+    echo "Please install EPEL repository and rerun script."
+    echo "https://support.rackspace.com/how-to/install-epel-and-additional-repositories-on-centos-and-red-hat/"
+    sleep 2
+    exit 1
 fi
 
 # Install base packages
@@ -60,7 +59,6 @@ systemctl enable chronyd
 systemctl start crond
 systemctl start sshd
 systemctl start chronyd
-
 
 #################################################
 # Web Server Package Installation Tasks
@@ -90,12 +88,12 @@ cp ../templates/rhel8/apache/status.conf.template /etc/httpd/conf.d/status.conf
 cp ../templates/rhel8/php/php.ini.template /etc/php.ini
 
 # Setup couple one offs
-if [ `grep "Listen 443" /etc/httpd/conf/httpd.conf |wc -l` = 0 ]; then
-	sed -i '/^Listen 80/a Listen 443' /etc/httpd/conf/httpd.conf
+if [ $(grep "Listen 443" /etc/httpd/conf/httpd.conf | wc -l) = 0 ]; then
+    sed -i '/^Listen 80/a Listen 443' /etc/httpd/conf/httpd.conf
 fi
 
-if [ `grep "IncludeOptional vhost.d/" /etc/httpd/conf/httpd.conf |wc -l` = 0 ]; then
-	echo "IncludeOptional vhost.d/*.conf" >> /etc/httpd/conf/httpd.conf
+if [ $(grep "IncludeOptional vhost.d/" /etc/httpd/conf/httpd.conf | wc -l) = 0 ]; then
+    echo "IncludeOptional vhost.d/*.conf" >>/etc/httpd/conf/httpd.conf
 fi
 
 # Setup Apache variables
@@ -113,8 +111,8 @@ sed -i "s/\$upload_max_filesize/$upload_max_filesize/g" /etc/php.ini
 
 # Secure /server-status behind htaccess
 srvstatus_htuser=serverinfo
-srvstatus_htpass=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16`
-echo "$srvstatus_htuser $srvstatus_htpass" > /root/.serverstatus
+srvstatus_htpass=$(tr </dev/urandom -dc _A-Z-a-z-0-9 | head -c16)
+echo "$srvstatus_htuser $srvstatus_htpass" >/root/.serverstatus
 htpasswd -b -c /etc/httpd/status-htpasswd $srvstatus_htuser $srvstatus_htpass
 
 # Set services to start on boot and start up
@@ -128,14 +126,13 @@ firewall-cmd --zone=public --add-service=https
 firewall-cmd --zone=public --permanent --add-service=https
 firewall-cmd --reload
 
-
 #################################################
 # MySQL Server Package Installation Tasks
 #################################################
 
 # MySQL variables
 # Taking default for the time being
-mysqlrootpassword=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16`
+mysqlrootpassword=$(tr </dev/urandom -dc _A-Z-a-z-0-9 | head -c16)
 
 # Install MySQL packages
 yum install -y mariadb mariadb-devel mariadb-server
@@ -161,7 +158,6 @@ mysql -e "FLUSH PRIVILEGES"
 cp ../templates/rhel8/mysql/dot.my.cnf.template /root/.my.cnf
 sed -i "s/\$mysqlrootpassword/$mysqlrootpassword/g" /root/.my.cnf
 
-
 #################################################
 # Holland Installation Tasks
 #################################################
@@ -173,11 +169,10 @@ yum install -y holland holland-mysqldump holland-common
 cp ../templates/rhel8/holland/default.conf.template /etc/holland/backupsets/default.conf
 
 # Setup nightly cronjob
-echo "30 3 * * * root /usr/sbin/holland -q bk" > /etc/cron.d/holland
+echo "30 3 * * * root /usr/sbin/holland -q bk" >/etc/cron.d/holland
 
 # Run holland
 /usr/sbin/holland -q bk
-
 
 #################################################
 # Setup Report
@@ -185,13 +180,13 @@ echo "30 3 * * * root /usr/sbin/holland -q bk" > /etc/cron.d/holland
 
 # Setup report variables
 txtbld=$(tput bold)
-lightblue=`tput setaf 6`
-nc=`tput sgr0`
-real_ip=`curl --silent -4 icanhazip.com 2>&1`
+lightblue=$(tput setaf 6)
+nc=$(tput sgr0)
+real_ip=$(curl --silent -4 icanhazip.com 2>&1)
 
 # Generate setup report
 
-cat << EOF > /root/setup_report
+cat <<EOF >/root/setup_report
 
 ${txtbld}---------------------------------------------------------------
                  LAMP Installation Complete
@@ -208,7 +203,7 @@ ${lightblue}Apache Server Status URL:${nc}   http://$real_ip/server-status
 ${lightblue}Apache Server Status User:${nc}  serverinfo
 ${lightblue}Apache Server Status Pass:${nc}  $srvstatus_htpass
 
-${lightblue}MySQL Root User:${nc}  root 
+${lightblue}MySQL Root User:${nc}  root
 ${lightblue}MySQL Root Pass:${nc}  $mysqlrootpassword
 
 If you lose this setup report, the credentails can be found in:
@@ -220,7 +215,7 @@ ${txtbld}---------------------------------------------------------------
 ---------------------------------------------------------------${nc}
 
 MySQL backups are being performed via Holland (www.hollandbackup.org) and
-is set to run nightly at 3:30AM server time.  
+is set to run nightly at 3:30AM server time.
 
 The critical information about Holland is below:
 

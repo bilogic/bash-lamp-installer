@@ -32,7 +32,6 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-
 #################################################
 # Base Package Installation Tasks
 #################################################
@@ -43,7 +42,6 @@ apt-get -y upgrade
 
 # Install base packages
 apt-get install -y cron openssh-server vim ntp sysstat man-db wget rsync screen
-
 
 #################################################
 # Web Server Package Installation Tasks
@@ -57,10 +55,10 @@ keep_alive_timeout=5
 prefork_start_servers=4
 prefork_min_spare_servers=4
 prefork_max_spare_servers=9
-prefork_server_limit=`free -m | grep "Mem:" | awk '{print $2/2/15}' | xargs printf "%.0f"`
-prefork_max_clients=`free -m | grep "Mem:" | awk '{print $2/2/15}' | xargs printf "%.0f"`
+prefork_server_limit=$(free -m | grep "Mem:" | awk '{print $2/2/15}' | xargs printf "%.0f")
+prefork_max_clients=$(free -m | grep "Mem:" | awk '{print $2/2/15}' | xargs printf "%.0f")
 prefork_max_requests_per_child=1000
-prefork_listen_backlog=`free -m | grep "Mem:" | awk '{print $2/2/15*2}' | xargs printf "%.0f"`
+prefork_listen_backlog=$(free -m | grep "Mem:" | awk '{print $2/2/15*2}' | xargs printf "%.0f")
 
 # PHP variables
 max_execution_time=30
@@ -86,9 +84,9 @@ chmod 770 /var/lib/php5/session
 cp ../templates/ubuntu1404/apache/default.template /etc/apache2/sites-available/
 cp ../templates/ubuntu1404/apache/apache2.conf.template /etc/apache2/apache2.conf
 cp ../templates/ubuntu1404/apache/ports.conf.template /etc/apache2/ports.conf
-cp ../templates/ubuntu1404/apache/mpm_prefork.conf.template  /etc/apache2/mods-available/mpm_prefork.conf
-cp ../templates/ubuntu1404/apache/ssl.conf.template  /etc/apache2/mods-available/ssl.conf
-cp ../templates/ubuntu1404/apache/status.conf.template  /etc/apache2/mods-available/status.conf
+cp ../templates/ubuntu1404/apache/mpm_prefork.conf.template /etc/apache2/mods-available/mpm_prefork.conf
+cp ../templates/ubuntu1404/apache/ssl.conf.template /etc/apache2/mods-available/ssl.conf
+cp ../templates/ubuntu1404/apache/status.conf.template /etc/apache2/mods-available/status.conf
 cp ../templates/ubuntu1404/php/php.ini.template /etc/php5/apache2/php.ini
 
 # Setup Apache variables
@@ -117,8 +115,8 @@ sed -i "s@\$session_save_path@$session_save_path@g" /etc/php5/apache2/php.ini
 
 # Secure /server-status behind htaccess
 srvstatus_htuser=serverinfo
-srvstatus_htpass=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16`
-echo "$srvstatus_htuser $srvstatus_htpass" > /root/.serverstatus
+srvstatus_htpass=$(tr </dev/urandom -dc _A-Z-a-z-0-9 | head -c16)
+echo "$srvstatus_htuser $srvstatus_htpass" >/root/.serverstatus
 htpasswd -b -c /etc/apache2/status-htpasswd $srvstatus_htuser $srvstatus_htpass
 
 # Restart Apache to apply new settings
@@ -127,7 +125,6 @@ service apache2 restart
 # Open up ports 80 and 443 in UFW
 ufw allow 80
 ufw allow 443
-
 
 #################################################
 # MySQL Server Package Installation Tasks
@@ -140,23 +137,23 @@ log_error=/var/log/mysql/error.log
 table_open_cache=2048
 query_cache_size=32M
 max_heap_table_size=64M
-max_connections=`echo $(( $prefork_max_clients + 2 ))`
+max_connections=$(echo $(($prefork_max_clients + 2)))
 wait_timeout=180
 net_read_timeout=30
 net_write_timeout=30
 back_log=128
 key_buffer_size=64M
-innodb_buffer_pool_size=`free -m | grep "Mem:" | awk '{print $2*20/100}' | xargs printf "%.0f"M`
+innodb_buffer_pool_size=$(free -m | grep "Mem:" | awk '{print $2*20/100}' | xargs printf "%.0f"M)
 innodb_log_buffer_size=64M
 log_bin=/var/lib/mysql/bin-log
 log_relay=/var/lib/mysql/relay-log
 log_slow=/var/lib/mysql/slow-log
 includedir=/etc/mysql/conf.d
-mysqlrootpassword=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16`
+mysqlrootpassword=$(tr </dev/urandom -dc _A-Z-a-z-0-9 | head -c16)
 
 # Install MySQL packages
 export DEBIAN_FRONTEND=noninteractive
-apt-get install -y mysql-server mysql-client libmysqlclient-dev 
+apt-get install -y mysql-server mysql-client libmysqlclient-dev
 mkdir -p /etc/mysql/conf.d
 mkdir -p /var/lib/mysqltmp
 chown mysql:mysql /var/lib/mysqltmp
@@ -203,7 +200,6 @@ rm -f /var/lib/mysql/ib_logfile0
 rm -f /var/lib/mysql/ib_logfile1
 service mysql restart
 
-
 #################################################
 # Holland Installation Tasks
 #################################################
@@ -213,7 +209,7 @@ eval $(cat /etc/os-release)
 DIST="xUbuntu_${VERSION_ID}"
 [ $ID == "debian" ] && DIST="Debian_${VERSION_ID}.0"
 curl -s http://download.opensuse.org/repositories/home:/holland-backup:/staging/${DIST}/Release.key | sudo apt-key add -
-echo "deb http://download.opensuse.org/repositories/home:/holland-backup:/staging/${DIST}/ ./" > /etc/apt/sources.list.d/holland.list
+echo "deb http://download.opensuse.org/repositories/home:/holland-backup:/staging/${DIST}/ ./" >/etc/apt/sources.list.d/holland.list
 
 # Install Holland packages
 apt-get update
@@ -224,11 +220,10 @@ cp ../templates/ubuntu1404/holland/default.conf.template /etc/holland/backupsets
 sed -i 's@/var/spool/holland@/var/lib/mysqlbackup@g' /etc/holland/holland.conf
 
 # Setup nightly cronjob
-echo "30 3 * * * root /usr/sbin/holland -q bk" > /etc/cron.d/holland
+echo "30 3 * * * root /usr/sbin/holland -q bk" >/etc/cron.d/holland
 
 # Run holland
 /usr/sbin/holland -q bk
-
 
 #################################################
 # PHPMyAdmin Installation Tasks
@@ -236,7 +231,7 @@ echo "30 3 * * * root /usr/sbin/holland -q bk" > /etc/cron.d/holland
 
 # PHPMyAdmin variables
 htuser=serverinfo
-htpass=`< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c16`
+htpass=$(tr </dev/urandom -dc _A-Z-a-z-0-9 | head -c16)
 
 # Install PHPMyAdmin package
 export DEBIAN_FRONTEND=noninteractive
@@ -247,7 +242,7 @@ cp ../templates/ubuntu1404/phpmyadmin/phpMyAdmin.conf.template /etc/phpmyadmin/p
 cp ../templates/ubuntu1404/phpmyadmin/config.inc.php.template /etc/phpmyadmin/config.inc.php
 
 # Setup PHPMyAdmin variables
-echo "$htuser $htpass" > /root/.phpmyadminpass
+echo "$htuser $htpass" >/root/.phpmyadminpass
 
 # Set PHPMyAdmin before htaccess file
 htpasswd -b -c /etc/phpmyadmin/phpmyadmin-htpasswd $htuser $htpass
@@ -256,20 +251,19 @@ htpasswd -b -c /etc/phpmyadmin/phpmyadmin-htpasswd $htuser $htpass
 ln -s /etc/phpmyadmin/phpMyAdmin.conf /etc/apache2/conf-enabled/phpMyAdmin.conf
 service apache2 restart
 
-
 #################################################
 # Setup Report
 #################################################
 
 # Setup report variables
 txtbld=$(tput bold)
-lightblue=`tput setaf 6`
-nc=`tput sgr0`
-real_ip=`curl --silent -4 icanhazip.com 2>&1`
+lightblue=$(tput setaf 6)
+nc=$(tput sgr0)
+real_ip=$(curl --silent -4 icanhazip.com 2>&1)
 
 # Generate setup report
 
-cat << EOF > /root/setup_report
+cat <<EOF >/root/setup_report
 
 ${txtbld}---------------------------------------------------------------
                  LAMP Installation Complete
@@ -290,11 +284,11 @@ ${lightblue}PHPMyAdmin URL:${nc}  http://$real_ip/phpmyadmin
 ${lightblue}PHPMyAdmin User:${nc} serverinfo / root
 ${lightblue}PHPMyAdmin Pass:${nc} $htpass / $mysqlrootpassword
 
-${lightblue}MySQL Root User:${nc}  root 
+${lightblue}MySQL Root User:${nc}  root
 ${lightblue}MySQL Root Pass:${nc}  $mysqlrootpassword
 
 ** For security purposes, there is an htaccess file in front of phpmyadmin.
-So when the popup window appears, use the serverinfo username and password. 
+So when the popup window appears, use the serverinfo username and password.
 Once your on the phpmyadmin landing page, use the root MySQL credentials.
 
 If you lose this setup report, the credentails can be found in:
@@ -307,7 +301,7 @@ ${txtbld}---------------------------------------------------------------
 ---------------------------------------------------------------${nc}
 
 MySQL backups are being performed via Holland (www.hollandbackup.org) and
-is set to run nightly at 3:30AM server time.  
+is set to run nightly at 3:30AM server time.
 
 The critical information about Holland is below:
 
