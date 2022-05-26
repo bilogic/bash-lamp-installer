@@ -4,7 +4,7 @@ LAMP installer setting up Apache, PHP, MySQL, Holland and attempts to set some s
 
 ### Purpose
 
-There are many LAMP installation scripts floating around the internet.  This is simply just another one to add to the mix.  It is customized to fit the majority of the use cases I run into, and should be ready for use right out of the box.  
+There are many LAMP installation scripts floating around the internet.  This is simply just another one to add to the mix. It is customized to fit the majority of the use cases I run into, and should be ready for use right out of the box.
 
 ### Supported OS's
 
@@ -18,15 +18,15 @@ Currently this LAMP installer supports
 
 ### Package Versions Installed
 
-It is important to note that for the CentOS and Red Hat operating systems, the installer makes use of the IUS repository in order to get the updated versions of PHP and MySQL.  
+It is important to note that for the CentOS and Red Hat operating systems, the installer makes use of the IUS repository in order to get the updated versions of PHP and MySQL.
 
 The specific packages and their associated versions are shown in the table below for each operating system.  The packages that deviate from the distro's default packages are denoted with IUS accordingly:
 
-| CentOS 6 / RHEL 6 | CentOS 7 / RHEL 7 | Ubuntu 16.04 | Ubuntu 18.04 |
-| ----------------- | ----------------- | ------------ | ------------ |
-| Apache 2.2        | Apache 2.4        | Apache 2.4   | Apache 2.4   |
-| PHP 5.3.3         | PHP 7.3 (IUS)     | PHP 7.0      | PHP 7.2      |
-| MySQL 5.6 (IUS)   | MariaDB 5.5       | MySQL 5.7    | MySQL 5.7    |
+| L | Ubuntu 22.04 | Ubuntu 18.04 | Ubuntu 16.04 | CentOS 7 / RHEL 7 | CentOS 6 / RHEL 6 |
+| - | ------------ | ------------ | ------------ | ----------------- | ----------------- |
+| A | Apache 2.4   | Apache 2.4   | Apache 2.4   | Apache 2.4        | Apache 2.2        |
+| M | MySQL 8.0    | MySQL 5.7    | MySQL 5.7    | MariaDB 5.5       | MySQL 5.6 (IUS)   |
+| P | PHP 7.4      | PHP 7.2      | PHP 7.0      | PHP 7.3 (IUS)     | PHP 5.3.3         |
 
 ### Additional Software Installed
 
@@ -71,11 +71,11 @@ Once the installer is done, you will receive a setup report that will contain th
 	PHPMyAdmin User: serverinfo / root
 	PHPMyAdmin Pass: ************** / **************
 
-	MySQL Root User:  root 
+	MySQL Root User:  root
 	MySQL Root Pass:  **************
 
 	** For security purposes, there is an htaccess file in front of phpmyadmin.
-	So when the popup window appears, use the serverinfo username and password. 
+	So when the popup window appears, use the serverinfo username and password.
 	Once your on the phpmyadmin landing page, use the root MySQL credentials.
 
 	If you lose this setup report, the credentails can be found in:
@@ -88,7 +88,7 @@ Once the installer is done, you will receive a setup report that will contain th
 	---------------------------------------------------------------
 
 	MySQL backups are being performed via Holland (www.hollandbackup.org) and
-	is set to run nightly at 3:30AM server time.  
+	is set to run nightly at 3:30AM server time.
 
 	The critical information about Holland is below:
 
@@ -100,6 +100,6 @@ Once the installer is done, you will receive a setup report that will contain th
 	Holland configs:   /etc/holland/holland.conf
 	                   /etc/holland/backupsets/default.conf
 	                   /etc/cron.d/holland
-	
+
 	---------------------------------------------------------------
 
