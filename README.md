@@ -45,10 +45,9 @@ This should only be ran on fresh, base installation of the operating system.  If
 
 Download and setup the LAMP stack by:
 
-	cd /root
 	git clone https://github.com/bilogic/bash-lamp-installer
 	cd bash-lamp-installer
-	bash install_lamp.sh
+	./install_lamp.sh
 
 Once the installer is done, you will receive a setup report that will contain the details of the setup.  An example of this is shown below:
 
