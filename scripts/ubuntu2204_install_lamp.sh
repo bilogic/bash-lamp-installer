@@ -87,15 +87,12 @@ session_save_path='/var/lib/php/sessions'
 # Add the Ondrej PPA to get specific PHP version
 LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
 # LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/apache2
-read -n1 -s -r -p $'PPA added. Press space to continue...\n' key
 
 # Install Apache and PHP packages
 apt-get -y --ignore-missing install \
     apache2 \
     apache2-utils \
     libapache2-mod-php"${PHP_VERSION}"
-
-read -n1 -s -r -p $'Going to install PHP. Press space to continue...\n' key
 
 apt-get -y --ignore-missing install \
     php"${PHP_VERSION}"-cli \
@@ -133,11 +130,7 @@ apt-get -y --ignore-missing install \
     status \
     mpm_prefork
 
-echo "*****************************"
 /usr/sbin/a2enmod php"${PHP_VERSION}"
-echo "*****************************"
-
-read -n1 -s -r -p $'a2enmod PHP installed. Press space to continue...\n' key
 
 /usr/sbin/phpenmod opcache
 
@@ -284,6 +277,9 @@ if [ $INSTALL_PHPMYADMIN = "True" ]; then
 else
     echo "PhpMyAdmin isn't installed due to the choice of the user!"
 fi
+
+# read -n1 -s -r -p $'Press space to continue...\n' key
+apt -y autoremove
 
 #################################################
 # Setup Report
