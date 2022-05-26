@@ -97,6 +97,8 @@ apt-get -y install \
     php"${PHP_VERSION}"-curl \
     php"${PHP_VERSION}"-opcache
 
+read -n1 -s -r -p $'PHP installed. Press space to continue...\n' key
+
 /usr/sbin/a2dismod mpm_event
 
 /usr/sbin/a2enmod \
@@ -127,6 +129,8 @@ apt-get -y install \
 echo "*****************************"
 /usr/sbin/a2enmod php"${PHP_VERSION}"
 echo "*****************************"
+
+read -n1 -s -r -p $'a2enmod PHP installed. Press space to continue...\n' key
 
 /usr/sbin/phpenmod opcache
 
