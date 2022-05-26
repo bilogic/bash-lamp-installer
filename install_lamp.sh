@@ -77,7 +77,7 @@ if [ -f /etc/lsb-release ]; then
 
     elif [ $(cat /etc/lsb-release | grep -c "RELEASE=22") -eq 1 ]; then
         cd scripts
-        bash ubuntu2004_install_lamp.sh
+        bash ubuntu2204_install_lamp.sh
 
     else
         echo "Unsupported operating system"
