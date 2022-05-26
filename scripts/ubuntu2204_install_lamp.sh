@@ -90,20 +90,21 @@ LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
 read -n1 -s -r -p $'PPA added. Press space to continue...\n' key
 
 # Install Apache and PHP packages
-apt-get -y install apache2
-apt-get -y install apache2-utils
-apt-get -y install libapache2-mod-php"${PHP_VERSION}"
+apt-get -y --ignore-missing install \
+    apache2 \
+    apache2-utils \
+    libapache2-mod-php"${PHP_VERSION}"
 
 read -n1 -s -r -p $'Going to install PHP. Press space to continue...\n' key
 
-apt-get -y install php"${PHP_VERSION}"-cli
-apt-get -y install php"${PHP_VERSION}"-pear
-apt-get -y install php"${PHP_VERSION}"-mysql
-apt-get -y install php"${PHP_VERSION}"-gd
-# apt-get -y install php"${PHP_VERSION}"-dev
-apt-get -y install php"${PHP_VERSION}"-phpdbg
-apt-get -y install php"${PHP_VERSION}"-curl
-apt-get -y install php"${PHP_VERSION}"-opcache
+apt-get -y --ignore-missing install \
+    php"${PHP_VERSION}"-cli \
+    php"${PHP_VERSION}"-pear \
+    php"${PHP_VERSION}"-mysql \
+    php"${PHP_VERSION}"-gd \
+    php"${PHP_VERSION}"-phpdbg \
+    php"${PHP_VERSION}"-curl \
+    php"${PHP_VERSION}"-opcache
 
 /usr/sbin/a2dismod mpm_event
 
@@ -200,7 +201,10 @@ mysqlrootpassword=$(tr </dev/urandom -dc _A-Z-a-z-0-9 | head -c16)
 
 # Install MySQL packages
 export DEBIAN_FRONTEND=noninteractive
-apt-get -y install mysql-server mysql-client libmysqlclient-dev
+apt-get -y --ignore-missing install \
+    mysql-server \
+    mysql-client \
+    libmysqlclient-dev
 mkdir -p /etc/mysql/conf.d
 mkdir -p /var/lib/mysqltmp
 chown mysql:mysql /var/lib/mysqltmp
@@ -238,8 +242,10 @@ echo "deb https://download.opensuse.org/repositories/home:/holland-backup/x${NAM
 wget -qO - https://download.opensuse.org/repositories/home:/holland-backup/x${NAME}_${VERSION_ID}/Release.key | apt-key add -
 
 # Install Holland packages
-apt-get -y update
-apt-get -y install holland python3-mysqldb
+apt-get -y --ignore-missing update
+apt-get -y --ignore-missing install \
+    holland \
+    python3-mysqldb
 
 # Copy over templates and configure backup directory
 cp ../templates/ubuntu2204/holland/default.conf /etc/holland/backupsets/default.conf
@@ -264,7 +270,7 @@ echo "$htuser $htpass" >/root/.phpmyadminpass
 if [ $INSTALL_PHPMYADMIN = "True" ]; then
     # Install PHPMyAdmin package
     export DEBIAN_FRONTEND=noninteractive
-    apt-get -y install phpmyadmin
+    apt-get -y --ignore-missing install phpmyadmin
 
     # Copy over templates
     cp ../templates/ubuntu2204/phpmyadmin/phpMyAdmin.conf /etc/phpmyadmin/phpMyAdmin.conf
