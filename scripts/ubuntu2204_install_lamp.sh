@@ -151,7 +151,7 @@ cp ../templates/ubuntu2204/apache/ports.conf /etc/apache2/ports.conf
 cp ../templates/ubuntu2204/apache/mpm_prefork.conf /etc/apache2/mods-available/mpm_prefork.conf
 cp ../templates/ubuntu2204/apache/ssl.conf /etc/apache2/mods-available/ssl.conf
 cp ../templates/ubuntu2204/apache/status.conf /etc/apache2/mods-available/status.conf
-cp ../templates/ubuntu2204/php/php.ini /etc/php/7.4/apache2/php.ini
+cp ../templates/ubuntu2204/php${PHP_VERSION}/php.ini /etc/php/${PHP_VERSION}/apache2/php.ini
 
 # Setup Apache variables
 sed -i "s/\$timeout/$timeout/g" /etc/apache2/apache2.conf
@@ -167,14 +167,14 @@ sed -i "s/\$prefork_max_requests_per_child/$prefork_max_requests_per_child/g" /e
 sed -i "s/\$prefork_listen_backlog/$prefork_listen_backlog/g" /etc/apache2/mods-available/mpm_prefork.conf
 
 # Setup PHP variables
-sed -i "s/\$memory_limit/$memory_limit/g" /etc/php/7.4/apache2/php.ini
-sed -i "s/\$short_open_tag/$short_open_tag/g" /etc/php/7.4/apache2/php.ini
-sed -i "s/\$expose_php/$expose_php/g" /etc/php/7.4/apache2/php.ini
-sed -i "s/\$max_execution_time/$max_execution_time/g" /etc/php/7.4/apache2/php.ini
-sed -i "s/\$error_reporting/$error_reporting/g" /etc/php/7.4/apache2/php.ini
-sed -i "s/\$post_max_size/$post_max_size/g" /etc/php/7.4/apache2/php.ini
-sed -i "s/\$upload_max_filesize/$upload_max_filesize/g" /etc/php/7.4/apache2/php.ini
-sed -i "s@\$session_save_path@$session_save_path@g" /etc/php/7.4/apache2/php.ini
+sed -i "s/\$memory_limit/$memory_limit/g" /etc/php/${PHP_VERSION}/apache2/php.ini
+sed -i "s/\$short_open_tag/$short_open_tag/g" /etc/php/${PHP_VERSION}/apache2/php.ini
+sed -i "s/\$expose_php/$expose_php/g" /etc/php/${PHP_VERSION}/apache2/php.ini
+sed -i "s/\$max_execution_time/$max_execution_time/g" /etc/php/${PHP_VERSION}/apache2/php.ini
+sed -i "s/\$error_reporting/$error_reporting/g" /etc/php/${PHP_VERSION}/apache2/php.ini
+sed -i "s/\$post_max_size/$post_max_size/g" /etc/php/${PHP_VERSION}/apache2/php.ini
+sed -i "s/\$upload_max_filesize/$upload_max_filesize/g" /etc/php/${PHP_VERSION}/apache2/php.ini
+sed -i "s@\$session_save_path@$session_save_path@g" /etc/php/${PHP_VERSION}/apache2/php.ini
 
 # Secure /server-status behind htaccess
 srvstatus_htuser=serverinfo
