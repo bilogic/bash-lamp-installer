@@ -57,6 +57,13 @@ apt -y install \
     rsync \
     screen
 
+# make sure SSL CA certs are up-to-date
+apt -y install \
+    ca-certificates \
+    update-ca-certificates
+cd /etc/ssl/certs
+ln -s ca-certificates.crt ca-bundle.crt
+
 #################################################
 # Web Server Package Installation Tasks
 #################################################
@@ -101,6 +108,7 @@ apt-get -y --ignore-missing install \
     php"${PHP_VERSION}"-gd \
     php"${PHP_VERSION}"-phpdbg \
     php"${PHP_VERSION}"-curl \
+    php"${PHP_VERSION}"-bcmath \
     php"${PHP_VERSION}"-opcache
 
 /usr/sbin/a2dismod mpm_event
@@ -127,9 +135,9 @@ apt-get -y --ignore-missing install \
     setenvif \
     socache_shmcb \
     ssl \
-    status \
-    mpm_prefork
+    status
 
+/usr/sbin/a2enmod vhost_alias # needed to support VirtualDocumentRoot in conf
 /usr/sbin/a2enmod php"${PHP_VERSION}"
 
 /usr/sbin/phpenmod opcache
